@@ -101,7 +101,7 @@ const SubscribeLeaveToggle = ({
       isLoading={isSubLoading}
       onClick={() => subscribe()}
     >
-      Join to post
+      Join to community
     </Button>
   );
 };
