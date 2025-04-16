@@ -1,18 +1,21 @@
-import { getToken } from 'next-auth/jwt'
-import { createUploadthing, type FileRouter } from 'uploadthing/next'
+import { getToken } from "next-auth/jwt";
+import { createUploadthing, type FileRouter } from "uploadthing/server";
+import type { NextRequest } from "next/server";
 
-const f = createUploadthing()
+const f = createUploadthing();
 
 export const ourFileRouter = {
-  imageUploader: f({ image: { maxFileSize: '4MB' } })
-    .middleware(async (req) => {
-      const user = await getToken({ req })
+  imageUploader: f({ image: { maxFileSize: "8MB" } })
+    .middleware(async ({ req }) => {
+      const token = await getToken({ req: req as NextRequest });
 
-      if (!user) throw new Error('Unauthorized')
+      if (!token || !token.sub) {
+        throw new Error("Unauthorized");
+      }
 
-      return { userId: user.id }
+      return { userId: token.sub };
     })
-    .onUploadComplete(async ({ metadata, file }) => {}),
-} satisfies FileRouter
+    .onUploadComplete(async () => {}),
+} satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter
+export type OurFileRouter = typeof ourFileRouter;

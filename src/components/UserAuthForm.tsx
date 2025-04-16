@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { useToast } from "@/hooks/use-toast";
 import { Icons } from "./Icons";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
+const UserAuthForm: FC<React.HTMLAttributes<HTMLDivElement>> = ({
+  className,
+  ...props
+}) => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
@@ -19,7 +20,7 @@ const UserAuthForm: FC<UserAuthFormProps> = ({ className, ...props }) => {
 
     try {
       await signIn("google");
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "There was an error logging in with Google",

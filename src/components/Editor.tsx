@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { uploadFiles } from "@/lib/uploadthing";
 import { PostCreationRequest, PostValidator } from "@/lib/validators/post";
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 import "@/styles/editor.css";
 
@@ -51,7 +51,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       const { data } = await axios.post("/api/subreddit/post/create", payload);
       return data;
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError) => {
       const message =
         error?.response?.status === 403
           ? "You must subscribe to the community to post."
@@ -109,15 +109,32 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
             config: {
               uploader: {
                 async uploadByFile(file: File) {
-                  // upload to uploadthing
-                  const [res] = await uploadFiles([file], "imageUploader");
+                  try {
+                    const res = await uploadFiles("imageUploader", {
+                      files: [file],
+                    });
 
-                  return {
-                    success: 1,
-                    file: {
-                      url: res.fileUrl,
-                    },
-                  };
+                    if (!res || res.length === 0 || !res[0]?.ufsUrl) {
+                      throw new Error("Invalid upload response");
+                    }
+
+                    return {
+                      success: 1,
+                      file: {
+                        url: res[0].ufsUrl,
+                      },
+                    };
+                  } catch {
+                    toast({
+                      title: "Image Upload Failed",
+                      description: "Couldn't upload image. Please try again.",
+                      variant: "destructive",
+                    });
+
+                    return {
+                      success: 0,
+                    };
+                  }
                 },
               },
             },
@@ -134,8 +151,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
 
   useEffect(() => {
     if (Object.keys(errors).length) {
-      for (const [_key, value] of Object.entries(errors)) {
-        value;
+      for (const value of Object.values(errors)) {
         toast({
           title: "Something went wrong.",
           description: (value as { message: string }).message,
@@ -199,7 +215,7 @@ export const Editor: React.FC<EditorProps> = ({ subredditId }) => {
           <TextareaAutosize
             ref={(e) => {
               titleRef(e);
-              // @ts-ignore
+              // @ts-expect-error: Overriding internal ref assignment for local focus control
               _titleRef.current = e;
             }}
             {...rest}
