@@ -41,7 +41,7 @@
     "cmdk": "^0.2.0",
     "date-fns": "^2.30.0",
     "editorjs-react-renderer": "^3.5.1",
-    "eslint": "8",
+    "eslint": "^8.57.0",
     "eslint-config-next": "13.4.4",
     "lodash.debounce": "^4.0.8",
     "lucide-react": "^0.221.0",
@@ -57,6 +57,7 @@
     "react-textarea-autosize": "^8.4.1",
     "server-only": "^0.0.1",
     "sharp": "^0.32.1",
+    "slugify": "^1.6.6",
     "tailwind-merge": "^1.12.0",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.5",
@@ -69,8 +70,8 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
-    "@typescript-eslint/eslint-plugin": "^8.30.1",
-    "@typescript-eslint/parser": "^8.30.1"
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0"
   },
   "packageManager": "yarn@1.22.22+sha256.c17d3797fb9a9115bf375e31bfd30058cac6bc9c3b8807a3d8cb2094794b51ca"
 }
